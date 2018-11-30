@@ -2,9 +2,24 @@
 #include <stdio.h>
 #include <string.h>
 
-int changeToArray(const char *inStr, const char *delimiter,char ***outPtr, int *row) {
+/**统计某字符在字符串中的出现个数**/
+int findOccurNum (const char *inStr, char target, int *num) {
+  if (inStr == NULL || num == NULL)
+    return -1;
+
+  const char *result = inStr;
+  int tmpNum = 0;
+  while ((result = strchr(result, target)) != NULL) {
+    ++result;
+    ++tmpNum;
+  }
+  *num = tmpNum;
+  return 0;
+}
+
+int changeToArray(const char *inStr, const char delimiter,char ***outPtr, int *row) {
   char *subStr = NULL;
-  if (inStr == NULL || delimiter == NULL || outPtr == NULL || row == NULL)
+  if (inStr == NULL || outPtr == NULL || row == NULL)
     return -1;
 
   char **array = NULL;
@@ -13,23 +28,20 @@ int changeToArray(const char *inStr, const char *delimiter,char ***outPtr, int *
   int tmpRow = 0;
 
   tempInStr = inStr;
-  while ((nextToken = strstr(tempInStr, delimiter))) {//计算行数，有点啰嗦，暂时想不到好的办法
-    ++tmpRow;
-    tempInStr = nextToken + strlen(delimiter);
-  }
+  findOccurNum(tempInStr, delimiter, &tmpRow);
+
   array = (char **)malloc(sizeof(char *) * tmpRow);
   if (array == NULL)
     return -2;
 
-  tempInStr = inStr;
-  while ((nextToken = strstr(tempInStr, delimiter))) {//生成每行的字符串
+  while ((nextToken = strchr(tempInStr, delimiter))) {//生成每行的字符串
     int sizeOfStr = nextToken - tempInStr + 1;
     char *element = (char *)malloc(sizeof(char) * sizeOfStr);
     if (element == NULL)
       return -3;
 
     strncat(element, tempInStr, nextToken - tempInStr);
-    tempInStr = nextToken + strlen(delimiter);
+    tempInStr = nextToken + 1;
     *array = element;
     ++array;
   }
@@ -57,7 +69,7 @@ int main(int argc, char **argv) {
   char **array = NULL;
   int row = 0;
 
-  int ret = changeToArray(inStr, ",", &array, &row);
+  int ret = changeToArray(inStr, ',', &array, &row);
   if (ret) { //changeToArray 运行错误
     printf("changeToArray error:%d\n", ret);
     return ret;
@@ -74,5 +86,8 @@ int main(int argc, char **argv) {
     return ret;
   }
 
+  // int num = 0;
+  // findOccurNum(inStr, ',', &num);
+  // printf("num:%d\n", num);
   return 0;
 }

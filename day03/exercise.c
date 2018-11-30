@@ -2,18 +2,18 @@
 #include <stdio.h>
 #include <string.h>
 
-int changeToArray(char *inStr, char* delimiter,char ***outPtr, int *row) {
+int changeToArray(const char *inStr, const char *delimiter,char ***outPtr, int *row) {
   char *subStr = NULL;
   if (inStr == NULL || delimiter == NULL || outPtr == NULL || row == NULL)
     return -1;
 
   char **array = NULL;
-  char *tempInStr = NULL;
+  const char *tempInStr = NULL;
   char *nextToken = NULL;
   int tmpRow = 0;
 
   tempInStr = inStr;
-  while (nextToken = strstr(tempInStr, delimiter)) {//计算行数，有点啰嗦，暂时想不到好的办法
+  while ((nextToken = strstr(tempInStr, delimiter))) {//计算行数，有点啰嗦，暂时想不到好的办法
     ++tmpRow;
     tempInStr = nextToken + strlen(delimiter);
   }
@@ -22,7 +22,7 @@ int changeToArray(char *inStr, char* delimiter,char ***outPtr, int *row) {
     return -2;
 
   tempInStr = inStr;
-  while (nextToken = strstr(tempInStr, delimiter)) {//生成每行的字符串
+  while ((nextToken = strstr(tempInStr, delimiter))) {//生成每行的字符串
     int sizeOfStr = nextToken - tempInStr + 1;
     char *element = (char *)malloc(sizeof(char) * sizeOfStr);
     if (element == NULL)

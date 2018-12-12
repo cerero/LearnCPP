@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 
-int GetCfgItem(cosnt char *fileName/*in*/, const char *key/*in*/, char *pValue/*in out*/, int *pValueLen/*out*/) {
+#define MAXLENGTH 1024
+int GetCfgItem(const char *fileName/*in*/, const char *key/*in*/, char *pValue/*in out*/, int *pValueLen/*out*/) {
   if (fileName == NULL || key == NULL || pValue == NULL || pValueLen == NULL)
     return -1;
 
-  const int bufLen = 1024;
-  char buffer[bufLen] = {0};
+  char buffer[MAXLENGTH];
 
   FILE *fp = fopen(fileName, "r");
   if (!fp) {
@@ -18,16 +18,35 @@ int GetCfgItem(cosnt char *fileName/*in*/, const char *key/*in*/, char *pValue/*
   }
 
   char *ret = NULL;
-  while ((ret = fgets(buffer, bufLen, fp))) {
+  char *tmpKey = NULL;
+  char *tmpVal = NULL;
 
+  while(!feof(fp) && !ferror(fp)) {
+    fgets(buffer, MAXLENGTH, fp);
+    tmpKey = strstr(buffer, key);
+    if (tmpKey == NULL)
+      continue;
+
+    tmpVal = strchr(tmpKey + strlen(key), '=');
+    if (tmpVal == NULL)
+      continue;
+
+    tmpVal += 1;
+    strcpy(pValue, tmpVal);
+    *pValueLen = strlen(pValue);
+    break;
   }
 
   if (fp) {
     fclose(fp);
   }
-  return 0;
+
+  if (tmpVal == NULL)
+    return -3;
+  else
+    return 0;
 }
 
-int WriteCfgItem(cosnt char *fileName/*in*/, const char *key/*in*/, const char *val/*int*/, int valueLen/*in*/) {
+int WriteCfgItem(const char *fileName/*in*/, const char *key/*in*/, const char *val/*int*/, int valueLen/*in*/) {
   return 0;
 }

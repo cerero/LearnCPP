@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-int GetCfgItem(cosnt char *fileName/*in*/, const char *key/*in*/, char *pValue/*in out*/, int *pValueLen/*out*/);
-int WriteCfgItem(cosnt char *fileName/*in*/, const char *key/*in*/, const char *val/*int*/, int valueLen/*in*/);
+int GetCfgItem(const char *fileName/*in*/, const char *key/*in*/, char *pValue/*in out*/, int *pValueLen/*out*/);
+int WriteCfgItem(const char *fileName/*in*/, const char *key/*in*/, const char *val/*int*/, int valueLen/*in*/);
 
 #ifdef __cplusplus
 }

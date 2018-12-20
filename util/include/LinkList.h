@@ -5,18 +5,24 @@
 extern "C" {
 #endif
 
-typedef void * LinkListNode;
+typedef void LinkListNode;
 
 typedef struct Node {
   Node *next;
 } Node;
 
 typedef struct LinkList {
-  Node headNode;
+  Node *next;
 } LinkList;
 
-int createLinkList(LinkList **linkList);
-int appendLinkList(LinkList **linkList, LinkListNode node);
+int createLinkList(LinkList **linkList/**out**/);
+int appendLinkList(LinkList *linkList, LinkListNode *listNode);
+int getLinkListLength(LinkList *linkList, int *length/**out**/);
+int getNodeByIndex(LinkList *linkList, int index, LinkListNode **listNode/**out**/);
+int insertLinkListNode(LinkList *linkList, LinkListNode *listNode, int appendIndex);
+int removeLinkListNode(LinkList *linkList, LinkListNode **listNode/**out**/, int delIndex);
+int removeAllLinkListNode(LinkList *linkList);
+int destroyLinkList(LinkList **linkList);
 
 #ifdef __cplusplus
 }

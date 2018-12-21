@@ -8,7 +8,7 @@ extern "C" {
 typedef void LinkListNode;
 
 typedef struct Node {
-  Node *next;
+  struct Node *next;
 } Node;
 
 typedef struct LinkList {

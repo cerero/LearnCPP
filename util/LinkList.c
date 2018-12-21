@@ -1,4 +1,7 @@
 #include "LinkList.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 int createLinkList(LinkList **linkList/**out**/) {
   int ret = 0;
@@ -28,11 +31,13 @@ int appendLinkList(LinkList *linkList, LinkListNode *listNode) {
   }
 
   LinkList *tmpList = linkList;
-  while (tmpList->next) {
-    tmpList = tmpList->next;
+  Node *tmpNode = (Node *)tmpList->next;
+  Node *tmpPreNode = (Node *)tmpList;
+  while (tmpNode) {
+    tmpPreNode = tmpNode;
+    tmpNode = tmpNode->next;
   }
-
-  tmpList->next = (Node *)listNode;
+  tmpPreNode->next = (Node *)listNode;
   ((Node *)listNode)->next = NULL;
 END:
   return ret;
@@ -41,13 +46,15 @@ END:
 int getLinkListLength(LinkList *linkList, int *length) {
   int ret = 0;
   int tmpLength = 0;
-  if (linkList == NULL) {
+  if (linkList == NULL || length == NULL) {
     ret = -1;
     goto END;
   }
 
   LinkList *tmpList = linkList;
-  while (tmpList->next) {
+  Node *tmpNode = (Node *)tmpList->next;
+  while (tmpNode) {
+    tmpNode = tmpNode->next;
     tmpLength ++;
   }
 
@@ -65,18 +72,17 @@ int getNodeByIndex(LinkList *linkList, int index, LinkListNode **listNode/**out*
   }
 
   LinkList *tmpList = linkList;
-  Node *tmpNode = NULL;
-  do {
-    tmpNode = (Node *)tmpList->next;
-    if (tmpInd == appendIndex) {
-      if (tmpNode) {
-        *listNode = (LinkListNode *)tmpNode;
-        ret = 0;
-      }
-      break;
+  Node *tmpNode = (Node *)tmpList->next;;
+
+  while (tmpNode) {
+    if (tmpInd == index) {
+      *listNode = (LinkListNode *)tmpNode;
+      ret = 0;
+      goto END;
     }
     tmpInd++;
-  } while (tmpNode)
+    tmpNode = tmpNode->next;
+  }
 END:
   return ret;
 }
@@ -90,17 +96,23 @@ int insertLinkListNode(LinkList *linkList, LinkListNode *listNode, int appendInd
   }
 
   LinkList *tmpList = linkList;
-  Node *tmpNode = NULL;
-  do {
-    tmpNode = (Node *)tmpList->next;
+  Node *tmpPreNode = (Node *)tmpList;
+  Node *tmpNode = (Node *)tmpList->next;
+
+  while (tmpNode) {
     if (tmpInd == appendIndex) {
-      tmpList->next = (Node *)listNode;
-      ((Node *)listNode)->next = tmpNode;
-      ret = 0;
       break;
     }
     tmpInd++;
-  } while (tmpNode)
+    tmpPreNode = tmpNode;
+    tmpNode = tmpNode->next;
+  }
+
+  if (tmpInd == appendIndex) {
+    tmpPreNode->next = (Node *)listNode;
+    ((Node *)listNode)->next = tmpNode;
+    ret = 0;
+  }
 END:
   return ret;
 }
@@ -115,15 +127,13 @@ int removeLinkListNode(LinkList *linkList, LinkListNode **listNode/**out**/, int
 
   LinkList *tmpList = linkList;
   Node *tmpNode = (Node *)tmpList->next;
-  Node *tmpPre = NULL;
+  Node *tmpPre = (Node *)tmpList;
   while (tmpNode) {
-    if (tmpInd == appendIndex) {
-      if (tmpPre) {
-        tmpPre->next = tmpNode->next;
-        tmpNode->next = NULL;
-        *listNode = (LinkListNode *)tmpNode;
-        ret = 0;
-      }
+    if (tmpInd == delIndex) {
+      tmpPre->next = tmpNode->next;
+      tmpNode->next = NULL;
+      *listNode = (LinkListNode *)tmpNode;
+      ret = 0;
       break;
     }
     tmpPre = tmpNode;
@@ -142,8 +152,14 @@ int removeAllLinkListNode(LinkList *linkList) {
     goto END;
   }
 
-
-
+  LinkList *tmpList = linkList;
+  Node *tmpNode = (Node *)tmpList->next;
+  Node *tmpNext = NULL;
+  while (tmpNode) {
+    tmpNext = tmpNode->next;
+    tmpNode->next = NULL;
+    tmpNode = tmpNext;
+  }
 END:
   return ret;
 }

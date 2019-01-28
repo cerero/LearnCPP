@@ -12,6 +12,11 @@ public:
   int getData(int index);
   void setData(int index, int data);
   int length();
+
+  int& operator[](int index);
+  Array& operator=(Array& array);
+  bool operator==(Array& array);
+  bool operator!=(Array& array);
 };
 
 #endif

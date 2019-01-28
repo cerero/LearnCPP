@@ -1,7 +1,7 @@
 #include "Array.h"
 #include <cstring>
 
-Array::Array(int length) : len(0), datas(NULL){
+Array::Array(int length) : datas(NULL), len(0) {
   len = length;
   datas = new int[len];
 }
@@ -16,6 +16,7 @@ Array::~Array() {
   if (datas) {
     delete[] datas;
     datas = NULL;
+    len = 0;
   }
 }
 
@@ -34,4 +35,28 @@ void Array::setData(int index, int data) {
 
 int Array::length() {
   return len;
+}
+
+int& Array::operator[](int index) {
+  return datas[index];
+}
+
+Array& Array::operator=(Array& array) {
+  if (datas) {
+    delete[] datas;
+    datas = NULL;
+    len = 0;
+  }
+  len = array.len;
+  datas = new int[array.len];
+  memcpy(datas, array.datas, len * sizeof(int));
+  return array;
+}
+
+bool Array::operator==(Array& array) {
+  return datas && array.datas && len == array.len && (memcmp(datas, array.datas, len) == 0);
+}
+
+bool Array::operator!=(Array& array) {
+  return !datas || !array.datas || len != array.len || (memcmp(datas, array.datas, len) != 0);
 }

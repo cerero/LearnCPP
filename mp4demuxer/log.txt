@@ -1,0 +1,20 @@
+# gcc -std=gnu99 -ggdb -O0 -g -o test mp4_parse.c stream.c main.c
+# clang -o test -std=c99 mp4_parse.c stream.c main.c
+clang -o test -std=c99 stream.c main.c
+main.c:18:36: error: use of undeclared identifier 'file_path'
+        TRACE_LOG("path:%s, open_ret:%d", file_path, open_ret);
+                                          ^
+main.c:21:3: warning: invalid conversion specifier '\x0a' [-Wformat-invalid-specifier]
+                TRACE_LOG("file_size: %l", file_size);
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./trace.h:18:80: note: expanded from macro 'TRACE_LOG'
+#define TRACE_LOG(information, ...)  do{printf("func:%s, line:%d; "information"\n", __FUNCTION__, __LINE__, ##__VA_ARGS__);fflush(stdout);}while(0)
+                                                                   ~~~~~~~~~~~~^
+main.c:21:30: warning: data argument not used by format string [-Wformat-extra-args]
+                TRACE_LOG("file_size: %l", file_size);
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+./trace.h:18:111: note: expanded from macro 'TRACE_LOG'
+#define TRACE_LOG(information, ...)  do{printf("func:%s, line:%d; "information"\n", __FUNCTION__, __LINE__, ##__VA_ARGS__);fflush(stdout);}while(0)
+                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                            ^
+2 warnings and 1 error generated.
+make: *** [all] Error 1
